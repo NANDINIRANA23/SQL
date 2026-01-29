@@ -1,0 +1,235 @@
+Please solve these problems. You have option to solve them in MySQL, sql server and postgres. All are free questions.
+
+1- https://www.namastesql.com/coding-problem/38-product-reviews
+Suppose you are a data analyst working for a retail company, and your team is interested in analysing customer feedback to identify trends and patterns in product reviews.
+
+Your task is to write an SQL query to find all product reviews containing the word "excellent" or "amazing" in the review text. However, you want to exclude reviews that contain the word "not" immediately before "excellent" or "amazing". Please note that the words can be in upper or lower case or combination of both. 
+
+Your query should return the review_id,product_id, and review_text for each review meeting the criteria, display the output in ascending order of review_id.
+
+ 
+
+Table: product_reviews
++-------------+--------------+
+| COLUMN_NAME | DATA_TYPE    |
++-------------+--------------+
+| review_id   | int          |
+| product_id  | int          |
+| review_text | varchar(40)  |
++-------------+--------------+
+Hints
+Expected Output
++-----------+------------+-----------------------------------+
+| review_id | product_id | review_text                       |
++-----------+------------+-----------------------------------+
+|         1 |        101 | The product is excellent!         |
+|         2 |        102 | This product is Amazing.          |
+|         3 |        103 | Not an excellent product.         |
+|         4 |        104 | The quality is Excellent.         |
+|         5 |        105 | An amazing product!               |
+|         6 |        106 | This is not an amazing product.   |
+|        12 |        120 | Absolutely excellent performance! |
+|        18 |        126 | I did not find it excellent.      |
+|        19 |        127 | Nothing amazing here.             |
++-----------+------------+-----------------------------------+
+
+2- https://www.namastesql.com/coding-problem/61-category-sales-part-1
+Write an SQL query to retrieve the total sales amount for each product category in the month of February 2022, only including sales made on weekdays (Monday to Friday). Display the output in ascending order of total sales.
+
+ 
+
+
+Tables: sales
++-------------+-------------+
+| COLUMN_NAME | DATA_TYPE   |
++-------------+-------------+
+| id          | int         |
+| product_id  | int         |
+| category    | varchar(12) |
+| amount      | int         |
+| order_date  | date        |
++-------------+-------------+
+3- https://www.namastesql.com/coding-problem/62-category-sales-part-2
+Write an SQL query to retrieve the total sales amount in each category. Include all categories, if no products were sold in a category display as 0. Display the output in ascending order of total_sales.
+
+Tables: sales
++-------------+-----------+
+| COLUMN_NAME | DATA_TYPE |
++-------------+-----------+
+| amount      | int       |
+| category_id | int       |
+| sale_date   | date      |
+| sale_id     | int       |
++-------------+-----------+
+Tables: Categories
++---------------+-------------+
+| COLUMN_NAME   | DATA_TYPE   |
++---------------+-------------+
+| category_id   | int         |
+| category_name | varchar(12) |
++---------------+-------------+
+
+select c.category_name,coalesce(sum(s.amount),0) as total_sales
+from categories c 
+left join sales s on c.category_id=s.category_id
+group by c.category_name
+order by total_sales
+
+4- https://www.namastesql.com/coding-problem/71-department-average-salary
+You are provided with two tables: Employees and Departments. The Employees table contains information about employees, including their IDs, names, salaries, and department IDs. The Departments table contains information about departments, including their IDs and names. Your task is to write a SQL query to find the average salary of employees in each department, but only include departments that have more than 2 employees . Display department name and average salary round to 2 decimal places. Sort the result by average salary in descending order.
+
+ 
+
+Tables: Employees
++---------------+-------------+
+| COLUMN_NAME   | DATA_TYPE   |
++---------------+-------------+
+| employee_id   | int         |
+| employee_name | varchar(20) |
+| salary        | int         |
+| department_id | int         |
++---------------+-------------+
+Tables: Departments
++-----------------+-------------+
+| COLUMN_NAME     | DATA_TYPE   |
++-----------------+-------------+
+| department_id   | int         |
+| department_name | varchar(10) |
++-----------------+-------------+
+ 
+
+Hints
+Expected Output
++-----------------+----------------+
+| department_name | average_salary |
++-----------------+----------------+
+| HR              |       60000.00 |
+| Finance         |       57600.00 |
+| Marketing       |       56600.00 |
+| Sales           |       56285.71 |
+
+select d.department_name,ROUND(avg(e.salary),2)as avg_sal
+from employees e
+inner join departments d on e.department_id=d.department_id
+group by d.department_name
+having count(e.department_id)>=2
+order by avg_sal desc
+5- https://www.namastesql.com/coding-problem/72-product-sales
+You are provided with two tables: Products and Sales. The Products table contains information about various products, including their IDs, names, and prices. The Sales table contains data about sales transactions, including the product IDs, quantities sold, and dates of sale. Your task is to write a SQL query to find the total sales amount for each product. Display product name and total sales . Sort the result by product name.
+
+ 
+
+Table: products
++--------------+-------------+
+| COLUMN_NAME  | DATA_TYPE   |
++--------------+-------------+
+| product_id   | int         |
+| product_name | varchar(10) |
+| price        | int         |
++--------------+-------------+
+Table: sales
++-------------+-----------+
+| COLUMN_NAME | DATA_TYPE |
++-------------+-----------+
+| sale_id     | int       |
+| product_id  | int       |
+| quantity    | int       |
+| sale_date   | date      |
++-------------+-----------+
+Hints
+Expected Output
++--------------+--------------------+
+| product_name | total_sales_amount |
++--------------+--------------------+
+| Headphones   |                850 |
+| Laptop       |              13600 |
+| Smartphone   |               9000 |
+| Tablet       |               2800 |
++--------------+--------------------+
+
+select p.product_name, sum(s.quantity*p.price)as total_sale
+from products p
+inner join sales s on p.product_id=s.product_id
+group by p.product_name,p.price
+order by p.product_name
+
+
+6- https://www.namastesql.com/coding-problem/73-category-product-count
+ou are provided with a table that lists various product categories, each containing a comma-separated list of products. Your task is to write a SQL query to count the number of products in each category. Sort the result by product count & category in ASC order
+
+ 
+
+Tables: categories
++-------------+-------------+
+| COLUMN_NAME | DATA_TYPE   |
++-------------+-------------+
+| category    | varchar(50) |
+| products    | varchar(75) |
++-------------+-------------+
+Hints
+Expected Output
++-------------+---------------+
+| category    | product_count |
++-------------+---------------+
+| Furniture   |             1 |
+| Art         |             2 |
+| Automobile  |             2 |
+| Bags        |             2 |
+| Garden      |             2 |
+| Groceries   |             2 |
+| Health      |             2 |
+| Jewelry     |             2 |
+| Movies      |             2 |
+| Music       |             2 |
+| Pets        |             2 |
+| Shoes       |             2 |
+| Toys        |             2 |
+| Beauty      |             3 |
+| Books       |             3 |
+| Electronics |             3 |
+| Gaming      |             3 |
+| Kitchen     |             3 |
+| Sports      |             3 |
+| Stationery  |             3 |
+| Clothing    |             4 |
+
+
+
++-------------+---------------+
+
+select category,length(products)-length(replace(products,',', ''))+1 as number_of_products
+from categories
+group by category,products
+order by category,number_of_products asc
+
+7- https://www.namastesql.com/coding-problem/103-employee-mentor
+You are given a table Employees that contains information about employees in a company. Each employee might have been mentored by another employee. Your task is to find the names of all employees who were not mentored by the employee with id = 3.
+
+ 
+
+Table: employees 
++-------------+-------------+
+| COLUMN_NAME | DATA_TYPE   |
++-------------+-------------+
+| id          | int         |    
+| name        | varchar(10) |
+| mentor_id   | int         |
++-------------+-------------+
+Hints
+Expected Output
++--------+
+| name   |
++--------+
+| Arjun  |
+| Sneha  |
+| Vikram |
+| Priya  |
+| Rohan  |
+| Amit   |
+| Kunal  |
++--------+
+select name 
+from employees 
+where mentor_id is null OR
+ mentor_id !=3
+group by name
